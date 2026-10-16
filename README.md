@@ -37,7 +37,7 @@ py -m pip install selenium
 Put the given CSV (Site.csv) in the same folder which includes python file "Selenium-Form-Automation"
 4. Run the script
 in the terminal run
-python Selenium-Form-Automation
+python form_automation
 
 The script will process each valid row, submit the form, and print the name of each person submitted in the terminal.
 
