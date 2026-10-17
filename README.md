@@ -1,46 +1,65 @@
-# Python-Automation
-To be more descriptive it's a form automation using selenium with a csv file to get info from and put it in the form
+# Form Automation
 
-Selenium Form Automation
-This project demonstrates my python automation skills still using selenium.
-The script reads data from a CSV file and automatically fills out and submits forms on [QA Practice] (https://www.qapractice.com/practice-forms).
+A Python + Selenium script that reads people's info from a CSV file and fills out and submits the practice form on [QA Practice](https://www.qapractice.com/practice-forms) for each one, automatically. I built it to practice browser automation and working with CSV files.
 
-What does it do?
+## What it does
 
-Reads form data from a CSV file.
-Automatically fills in personal information and dropdown menus.
-Selects a preferred communication method.
-Submits the form for each person in the CSV file.
-Returns to the form and continues with the next entry.
+- Reads form data from a CSV file
+- Fills in the personal info fields and dropdown menus
+- Picks the preferred communication method
+- Submits the form, goes back to it, and moves on to the next person in the file
 
-Built with
+## What you need to run it
 
-Python
-Selenium library (Installed with terminal)
-built in CSV library
+- Python
+- Google Chrome
+- Selenium (the CSV library is built into Python)
+- A code editor like [PyCharm](https://www.jetbrains.com/pycharm/download/) or [Visual Studio Code](https://code.visualstudio.com/Download) (VS Code needs the Python extension)
 
-How to use it:
-1.Install python and google chrome and install any code editor
+## Setup
 
-Pycharm
-https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=windows
+1. Install Python, Chrome, and a code editor if you don't have them.
+2. Install Selenium by typing this in the terminal:
 
-Visual studio code - (though you are going to have to install extensions to be able to use python on it)
-https://code.visualstudio.com/Download?_exp_download=d53503e735
+```bash
+   pip install selenium
+```
 
-2. Install Selenium:
-pip install selenium
+   If that doesn't work, try:
 
-If that doesn't work, try:
-py -m pip install selenium
+```bash
+   py -m pip install selenium
+```
 
-Put the given CSV (Site.csv) in the same folder which includes python file "Selenium-Form-Automation"
-4. Run the script
-in the terminal run
-python form_automation
+3. Clone or download this repo.
+4. Make sure `Site.csv` is in the same folder as the Python file.
 
-The script will process each valid row, submit the form, and print the name of each person submitted in the terminal.
+## The CSV file
 
-Why I made this?
+The first row is a header and gets skipped. Every other row is one person, with the columns in this order:
 
-I built this project to practice Selenium browser automation, working with CSV files, to organize repetitive tasks.
+```csv
+Country,Title,first_name,Last_name,Date of birth,Date of joining,Email,Phone number,Prefered method of communication
+```
+
+The communication method should be `phone` or `email`.
+
+## Running it
+
+```bash
+py form_automation.py
+```
+
+A Chrome window opens and fills out the form once per row. When a form is submitted, the script prints the name in the terminal:
+
+```
+Submitted: <first name> <last name>
+```
+
+## Why I made this
+
+I built this Selenium automation project to automate a repetitive task: filling in the same form again and again.
+
+## Need something similar?
+
+If you need something like this for a different site or form, message me
