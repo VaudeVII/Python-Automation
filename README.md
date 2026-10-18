@@ -1,6 +1,6 @@
 # Form Automation
 
-A Python + Selenium script that reads people's info from a CSV file and fills out and submits the practice form on [QA Practice](https://www.qapractice.com/practice-forms) for each one, automatically. I built it to practice browser automation and working with CSV files.
+A Python + Selenium script that reads people's info from a CSV file and fills out and submits the practice form on [QA Practice](https://www.qapractice.com/practice-forms) for each one, automatically
 
 ## What it does
 
