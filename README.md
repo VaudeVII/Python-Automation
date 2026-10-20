@@ -5,7 +5,7 @@ A Python + Selenium script that reads people's info from a CSV file and fills ou
 ## What it does
 
 - Reads form data from a CSV file
-- Fills in the personal info fields and dropdown menus
+- Fills in the personal info fields of students who passed
 - Picks the preferred communication method
 - Submits the form, goes back to it, and moves on to the next person in the file
 
