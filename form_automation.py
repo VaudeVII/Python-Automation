@@ -4,91 +4,65 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver import ActionChains
 import csv
-
 browser = webdriver.Chrome()
 target_url = "https://www.qapractice.com/practice-forms"
-wait = WebDriverWait(browser, 10)
+browser_wait = WebDriverWait(browser, 10)
+PASS_MARK = 50
+submitted = 0
+skipped = 0
 
-def country_input(country):
-    country_browser = browser.find_element(By.ID, "forms-country")
-    Select(country_browser).select_by_visible_text(country)
+def fill_in_info(field_id, value):
+    browser.find_element(By.ID, field_id).send_keys(value)
 
-def title_input(title):
-    title_browser = browser.find_element(By.ID, "forms-title")
-    Select(title_browser).select_by_visible_text(title)
+def choose(field_id, text):
+    Select(browser.find_element(By.ID, field_id)).select_by_visible_text(text)
 
-def first_name(name):
-    first_name_browser = browser.find_element(By.ID, "forms-first-name")
-    first_name_browser.send_keys(name)
+def  click_on_element(element_id):
+    element = browser.find_element(By.ID, element_id)
+    ActionChains(browser).scroll_to_element(element).perform()
+    element.click()
 
-def last_name(name):
-    last_name_browser = browser.find_element(By.ID, "forms-last-name")
-    last_name_browser.send_keys(name)
+def go_back_to_form():
+    WebDriverWait(browser, 5).until(EC.element_to_be_clickable((By.CLASS_NAME, "btn"))).click()
+    
+try:
+    with open("Site.csv", "r", newline="", encoding="utf-8") as file:
+        reader = csv.reader(file)
+        headers = next(reader)
 
-def date_of_birth_input(dob):
-    dob_browser = browser.find_element(By.ID, "forms-dob")
-    dob_browser.send_keys(dob)
+        for row in reader:
+            if not row or not any(row):
+                continue
+            country, title, first, last, dob, doj, email, phone, method, grade = [cell.strip() for cell in row[:10]] #reading rows
+            grade = row[10].strip() #due to weird glitches happening when submitting it says invalid grade
+            try:
+                score = float(grade.split("/")[0])
+            except ValueError:
+                print(f"Skipped: {first} {last} (invalid grade: '{grade}')")
+                skipped += 1
+                continue
 
-def date_of_joining_input(doj):
-    doj_browser = browser.find_element(By.ID, "forms-doj")
-    doj_browser.send_keys(doj)
+            if score < PASS_MARK:
+                print(f"Skipped: {first} {last} (failed, {score:g}/70)")
+                skipped += 1
+                continue
 
-def email_input(email):
-    email_browser = browser.find_element(By.ID, "forms-email")
-    email_browser.send_keys(email)
+            browser.get(target_url)
+            browser_wait.until(EC.visibility_of_element_located((By.ID, "forms-country")))
 
-def phone_input(phone):
-    phone_browser = browser.find_element(By.ID, "forms-phone-number")
-    phone_browser.send_keys(phone)
-
-def communication_input(method):
-    communication = browser.find_element(By.ID, f"forms-comm-{method.lower()}")
-    ActionChains(browser).scroll_to_element(communication).perform()
-    communication.click()
-
-def submit_form():
-    submit_browser = browser.find_element(By.ID, "forms-submit")
-    ActionChains(browser).scroll_to_element(submit_browser).perform()
-    submit_browser.click()
-
-def go_back_to_form(): #<button type="button" class="mt-3 btn btn-primary">Go Back to Form</button>
-    go_back_to_form_browser = WebDriverWait(browser, 5).until(EC.element_to_be_clickable((By.CLASS_NAME, "btn")))
-    go_back_to_form_browser.click()
-
-with open("Site.csv", "r", newline="", encoding="utf-8") as file:
-    reader = csv.reader(file)
-    headers = next(reader)
-
-    for row in reader:
-        if not row or not any(row):
-            continue
-
-        country = row[0].strip()
-        title = row[1].strip()
-        first = row[2].strip()
-        last = row[3].strip()
-        dob = row[4].strip()
-        doj = row[5].strip()
-        email = row[6].strip()
-        phone = row[7].strip()
-        method = row[8].strip()
-
-        browser.get(target_url)
-
-        wait.until(
-            EC.visibility_of_element_located((By.ID, "forms-country"))
-        )
-
-        country_input(country)
-        title_input(title)
-        first_name(first)
-        last_name(last)
-        date_of_birth_input(dob)
-        date_of_joining_input(doj)
-        email_input(email)
-        phone_input(phone)
-        communication_input(method)
-        submit_form()
-        go_back_to_form()
-        print("Submitted:", first, last)
-browser.quit()
+            choose("forms-country", country)
+            choose("forms-title", title)
+            fill_in_info("forms-first-name", first)
+            fill_in_info("forms-last-name", last)
+            fill_in_info("forms-dob", dob)
+            fill_in_info("forms-doj", doj)
+            fill_in_info("forms-email", email)
+            fill_in_info("forms-phone-number", phone)
+            click_on_element(f"forms-comm-{method.lower()}")
+            click_on_element("forms-submit")
+            go_back_to_form()
+            print(f"Submitted: {first} {last} ({score:g}/70)")
+            submitted += 1
+    print(f"Done. Submitted: {submitted}, Skipped: {skipped}")
+finally:
+    browser.quit()
